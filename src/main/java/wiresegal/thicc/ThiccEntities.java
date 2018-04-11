@@ -8,6 +8,7 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -80,31 +81,28 @@ public class ThiccEntities {
     private static final UUID REACH_UUID = UUID.fromString("21df8e07-e1e5-41a8-9b90-5230b1453055");
 
 
+    private static void applyAttribute(Multimap<String, AttributeModifier> attributes,
+                                       IAttribute attribute, UUID uuid, String name, double value, int operation) {
+        attributes.put(attribute.getName(),
+                new AttributeModifier(uuid, name, value - (operation != 0 ? 1 : 0), operation).setSaved(false));
+    }
+
     @SubscribeEvent
     public static void entityAttributes(EntityJoinWorldEvent e) {
         Entity ent = e.getEntity();
         if (ent instanceof EntityLivingBase && !(ent instanceof EntityArmorStand)) {
             EntityLivingBase entity = (EntityLivingBase) ent;
-            ResourceLocation loc = EntityList.getKey(entity);
+            ResourceLocation loc = ent instanceof EntityPlayer ? new ResourceLocation("player") : EntityList.getKey(entity);
 
             Multimap<String, AttributeModifier> attributes = HashMultimap.create();
-            attributes.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(),
-                    new AttributeModifier(SPEED_UUID, SPEED_ATT, config.getConfigSpeed(loc), 1).setSaved(false));
-            attributes.put(SharedMonsterAttributes.FLYING_SPEED.getName(),
-                    new AttributeModifier(FSPEED_UUID, FSPEED_ATT, config.getConfigSpeed(loc), 1).setSaved(false));
-            attributes.put(SharedMonsterAttributes.MAX_HEALTH.getName(),
-                    new AttributeModifier(HEALTH_UUID, HEALTH_ATT, config.getConfigHealth(loc), 1).setSaved(false));
-            attributes.put(SharedMonsterAttributes.FOLLOW_RANGE.getName(),
-                    new AttributeModifier(FOLLOW_UUID, FOLLOW_ATT, config.getConfigFollow(loc), 1).setSaved(false));
-            attributes.put(SharedMonsterAttributes.ATTACK_DAMAGE.getName(),
-                    new AttributeModifier(DAMAGE_UUID, DAMAGE_ATT, config.getConfigDamage(loc), 1).setSaved(false));
-            attributes.put(EntityPlayer.REACH_DISTANCE.getName(),
-                    new AttributeModifier(REACH_UUID, REACH_ATT, config.getConfigReach(loc), 1).setSaved(false));
-
-            attributes.put(SharedMonsterAttributes.ARMOR.getName(),
-                    new AttributeModifier(ARMOR_UUID, ARMOR_ATT, config.getConfigArmor(loc), 0).setSaved(false));
-            attributes.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(),
-                    new AttributeModifier(TOUGH_UUID, TOUGH_ATT, config.getConfigToughness(loc), 0).setSaved(false));
+            applyAttribute(attributes, SharedMonsterAttributes.MOVEMENT_SPEED, SPEED_UUID, SPEED_ATT, config.getConfigSpeed(loc), 1);
+            applyAttribute(attributes, SharedMonsterAttributes.FLYING_SPEED, FSPEED_UUID, FSPEED_ATT, config.getConfigSpeed(loc), 1);
+            applyAttribute(attributes, SharedMonsterAttributes.MAX_HEALTH, HEALTH_UUID, HEALTH_ATT, config.getConfigHealth(loc), 1);
+            applyAttribute(attributes, SharedMonsterAttributes.FOLLOW_RANGE, FOLLOW_UUID, FOLLOW_ATT, config.getConfigFollow(loc), 1);
+            applyAttribute(attributes, SharedMonsterAttributes.ATTACK_DAMAGE, DAMAGE_UUID, DAMAGE_ATT, config.getConfigDamage(loc), 1);
+            applyAttribute(attributes, EntityPlayer.REACH_DISTANCE, REACH_UUID, REACH_ATT, config.getConfigReach(loc), 1);
+            applyAttribute(attributes, SharedMonsterAttributes.ARMOR, ARMOR_UUID, ARMOR_ATT, config.getConfigArmor(loc), 0);
+            applyAttribute(attributes, SharedMonsterAttributes.ARMOR_TOUGHNESS, TOUGH_UUID, TOUGH_ATT, config.getConfigToughness(loc), 0);
 
             entity.getAttributeMap().applyAttributeModifiers(attributes);
         }
@@ -126,6 +124,7 @@ public class ThiccEntities {
     }
 
     public static float getScaleFactor(Entity entity) {
-        return config.getConfigScale(EntityList.getKey(entity));
+        ResourceLocation loc = entity instanceof EntityPlayer ? new ResourceLocation("player") : EntityList.getKey(entity);
+        return config.getConfigScale(loc);
     }
 }
