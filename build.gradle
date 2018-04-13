@@ -31,6 +31,14 @@ minecraft {
     replaceIn 'ShotgunsAndGlitter.java'
 }
 
+jar {
+    manifest {
+        attributes(
+                "FMLCorePluginContainsFMLMod": "true",
+                "FMLCorePlugin": core_plugin)
+    }
+}
+
 repositories {
     mavenCentral()
     maven { url = "http://dvs1.progwml6.com/files/maven" }
