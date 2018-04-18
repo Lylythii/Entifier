@@ -110,7 +110,9 @@ public class ThiccEntities {
 
     @SubscribeEvent
     public static void jump(LivingEvent.LivingJumpEvent e) {
-        e.getEntityLiving().motionY *= config.getConfigJump(EntityList.getKey(e.getEntity()));
+        Entity entity = e.getEntity();
+        ResourceLocation loc = entity instanceof EntityPlayer ? new ResourceLocation("player") : EntityList.getKey(entity);
+        entity.motionY = entity.motionY * config.getConfigJump(loc);
     }
 
     @Mod.EventHandler

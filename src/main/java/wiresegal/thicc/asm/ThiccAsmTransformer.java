@@ -33,6 +33,7 @@ public class ThiccAsmTransformer implements IClassTransformer, Opcodes {
     static {
         transformers.put("net.minecraft.entity.Entity", ThiccAsmTransformer::transformEntity);
         transformers.put("net.minecraft.entity.player.EntityPlayer", ThiccAsmTransformer::transformEntityPlayer);
+        transformers.put("net.minecraft.client.renderer.entity.Render", ThiccAsmTransformer::transformRender);
     }
 
 
@@ -100,6 +101,27 @@ public class ThiccAsmTransformer implements IClassTransformer, Opcodes {
                     newInstructions.add(new MethodInsnNode(INVOKESTATIC, ASM_HOOKS, "rescale", "(FL" + ENTITY + ";)F", false));
 
                     method.instructions.insertBefore(retNode, newInstructions);
+
+                    return false;
+                }));
+    }
+
+    private static byte[] transformRender(byte[] basicClass) {
+        MethodSignature shadow = new MethodSignature("renderShadow", "func_76975_c",
+                "(L" + ENTITY + ";DDDFF)V");
+
+        FieldSignature size = new FieldSignature("shadowSize", "field_76989_e",
+                "F");
+
+        return transform(basicClass, shadow, "Resize shadow", combine(
+                (node) -> node.getOpcode() == GETFIELD && size.matches((FieldInsnNode) node),
+                (method, node) -> {
+                    InsnList newInstructions = new InsnList();
+
+                    newInstructions.add(new VarInsnNode(ALOAD, 1));
+                    newInstructions.add(new MethodInsnNode(INVOKESTATIC, ASM_HOOKS, "rescale", "(FL" + ENTITY + ";)F", false));
+
+                    method.instructions.insert(node, newInstructions);
 
                     return false;
                 }));
@@ -452,7 +474,34 @@ public class ThiccAsmTransformer implements IClassTransformer, Opcodes {
         public boolean matches(MethodInsnNode method) {
             return matches(method.name, method.desc);
         }
+    }
 
+    public static class FieldSignature {
+        private final String fieldName, srgName, fieldDesc;
+
+        public FieldSignature(String fieldName, String srgName, String fieldDesc) {
+            this.fieldName = fieldName;
+            this.srgName = srgName;
+            this.fieldDesc = fieldDesc;
+        }
+
+        @Override
+        public String toString() {
+            return "Names [" + fieldName + ", " + srgName + "] Descriptor " + fieldDesc;
+        }
+
+        public boolean matches(String fieldName, String fieldDesc) {
+            return (fieldName.equals(this.fieldName) || fieldName.equals(srgName))
+                    && (fieldDesc.equals(this.fieldDesc));
+        }
+
+        public boolean matches(FieldInsnNode field) {
+            return matches(field.name, field.desc);
+        }
+
+        public boolean matches(FieldNode field) {
+            return matches(field.name, field.desc);
+        }
     }
 
     /**
