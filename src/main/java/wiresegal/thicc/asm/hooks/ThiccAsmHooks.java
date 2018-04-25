@@ -1,4 +1,4 @@
-package wiresegal.thicc.asm;
+package wiresegal.thicc.asm.hooks;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;

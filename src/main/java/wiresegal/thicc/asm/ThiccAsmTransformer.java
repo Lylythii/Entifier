@@ -27,7 +27,7 @@ import java.util.function.Predicate;
 
 public class ThiccAsmTransformer implements IClassTransformer, Opcodes {
 
-    private static final String ASM_HOOKS = "wiresegal/thicc/asm/ThiccAsmHooks";
+    private static final String ASM_HOOKS = "wiresegal/thicc/asm/hooks/ThiccAsmHooks";
     private static final Map<String, Transformer> transformers = new HashMap<>();
 
     static {
