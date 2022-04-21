@@ -1,16 +1,17 @@
 [
   {
     "modid": "thiccentities",
-    "name": "Thicc Entities",
-    "description": "A mod that allows you to configure entity size.",
-    "version": "1.0",
-    "mcversion": "1.12.2",
-    "url": "https://minecraft.curseforge.com/projects/thicc-entities",
-    "updateUrl": "",
-    "authorList": ["WireSegal"],
-    "credits": "Tristaric for the logo.",
-    "logoFile": "/thiccentities.png",
-    "screenshots": [],
-    "dependencies": []
+    "name": "Entifier",
+    "description": "Mod that allows you to configure Entity/Player sizes, jump height, health & more! Patch version of Thicc Entities for usage in the TFC: The Final Frontier total overhaul project.",
+    "version": "2.0.0",
+    "mcversion": "${mc_version}",
+    "url": "https://minecraft.curseforge.com/projects/entifier",
+    "logoFile": "/assets/mod_logo/tfc.png",
+    "updateJson": "",
+    "authorList": [
+      "Lylythii",
+	  "ACGaming"
+    ],
+    "credits": "ACGaming, for assisting with the Aqua Acrobatics conflict fix. WireSegal, for the original mod."
   }
 ]

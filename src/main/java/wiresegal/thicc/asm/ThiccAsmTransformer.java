@@ -32,7 +32,7 @@ public class ThiccAsmTransformer implements IClassTransformer, Opcodes {
 
     static {
         transformers.put("net.minecraft.entity.Entity", ThiccAsmTransformer::transformEntity);
-        transformers.put("net.minecraft.entity.player.EntityPlayer", ThiccAsmTransformer::transformEntityPlayer);
+//        transformers.put("net.minecraft.entity.player.EntityPlayer", ThiccAsmTransformer::transformEntityPlayer);
         transformers.put("net.minecraft.client.renderer.entity.Render", ThiccAsmTransformer::transformRender);
     }
 
@@ -61,6 +61,11 @@ public class ThiccAsmTransformer implements IClassTransformer, Opcodes {
         });
     }
 
+/*
+	Conflicts with Aqua Acrobatics.
+*/
+
+/*
     private static byte[] transformEntityPlayer(byte[] basicClass) {
         MethodSignature get = new MethodSignature("getEyeHeight", "func_70047_e", "()F");
         MethodSignature set = new MethodSignature("getDefaultEyeHeight", "", "()F");
@@ -105,6 +110,7 @@ public class ThiccAsmTransformer implements IClassTransformer, Opcodes {
                     return false;
                 }));
     }
+*/
 
     private static byte[] transformRender(byte[] basicClass) {
         MethodSignature shadow = new MethodSignature("renderShadow", "func_76975_c",
